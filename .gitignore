@@ -3,8 +3,6 @@
 __pycache__/
 *.pyc
 complianceiq.db
-model.pkl
-shap_explainer.pkl
 chroma_db/
 venv/
 .vscode/
