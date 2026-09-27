@@ -1,4 +1,4 @@
-# ============================================================
+﻿# ============================================================
 # FILE: backend/app/main.py
 # ============================================================
 #
@@ -71,7 +71,7 @@ def safe_json(obj):
     return obj
 load_dotenv()
 
-# ── SECURITY SETUP ──────────────────────────────────────────────────────────
+# â”€â”€ SECURITY SETUP â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 # SECRET_KEY: a long random string used to sign JWT tokens.
 # Anyone with this string can create fake tokens, so NEVER share it.
 # We load it from the .env file.
@@ -81,7 +81,7 @@ TOKEN_EXPIRE_HOURS = 8
 
 # pwd_context: handles bcrypt password hashing.
 # bcrypt is a one-way scrambler. Given "password123", it produces
-# "$2b$12$abc...xyz" — a string that looks like garbage.
+# "$2b$12$abc...xyz" â€” a string that looks like garbage.
 # You can check if "password123" matches the garbage, but you
 # cannot reverse the garbage to find "password123".
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -92,7 +92,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 
 
-# ── HELPER FUNCTIONS ────────────────────────────────────────────────────────
+# â”€â”€ HELPER FUNCTIONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 def hash_password(plain_password: str) -> str:
     """Convert a plain password into a bcrypt hash for safe storage."""
@@ -110,7 +110,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 def create_access_token(user_id: str, email: str, role: str) -> str:
     """
-    Create a JWT token — a signed "ID badge" valid for 8 hours.
+    Create a JWT token â€” a signed "ID badge" valid for 8 hours.
 
     The token contains: user_id, email, role, expiry time.
     It is signed with SECRET_KEY so it cannot be tampered with.
@@ -135,7 +135,7 @@ def get_current_user(
     db: Session = Depends(get_db),
 ) -> User:
     """
-    FastAPI "dependency" — reads the JWT token from the request
+    FastAPI "dependency" â€” reads the JWT token from the request
     and returns the logged-in user.
 
     Add this to any route that requires login:
@@ -163,7 +163,7 @@ def get_current_user(
 
 def require_roles(allowed_roles: list):
     """
-    FastAPI "dependency factory" — blocks a route if the user's
+    FastAPI "dependency factory" â€” blocks a route if the user's
     role is not in the allowed list.
 
     HOW TO USE:
@@ -177,7 +177,7 @@ def require_roles(allowed_roles: list):
     If an analyst tries to hit this route, they get:
         403 Forbidden: "Access denied. Required roles: [officer, admin]"
 
-    IMPORTANT: This check happens on the SERVER — not just in the UI.
+    IMPORTANT: This check happens on the SERVER â€” not just in the UI.
     Hiding buttons in the frontend is cosmetic only. The real
     enforcement is here, on every API call.
     """
@@ -215,7 +215,7 @@ def write_audit_log(
     db.commit()
 
 
-# ── REQUEST / RESPONSE SCHEMAS ───────────────────────────────────────────────
+# â”€â”€ REQUEST / RESPONSE SCHEMAS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 # Pydantic models define the shape of JSON data your API accepts and returns.
 # FastAPI validates all incoming data against these automatically.
 # If the data doesn't match, FastAPI returns a 422 error automatically.
@@ -253,7 +253,7 @@ class ChatbotRequest(BaseModel):
     question: str
 
 
-# ── APP STARTUP ──────────────────────────────────────────────────────────────
+# â”€â”€ APP STARTUP â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 # Code inside @asynccontextmanager runs ONCE when the server starts.
 # Use it for one-time setup: creating tables, creating the default admin.
 @asynccontextmanager
@@ -261,7 +261,7 @@ async def lifespan(app: FastAPI):
     logger.info("ComplianceIQ starting up...")
 
     # Create all database tables if they don't exist yet.
-    # This is safe to run every time — if tables exist, it does nothing.
+    # This is safe to run every time â€” if tables exist, it does nothing.
     Base.metadata.create_all(bind=engine)
     logger.info("  Database tables ready.")
 
@@ -292,7 +292,7 @@ async def lifespan(app: FastAPI):
             logger.info("    officer@complianceiq.com / Officer@1234")
             logger.info("    analyst@complianceiq.com / Analyst@1234")
         else:
-            logger.info("  Users already exist — skipping.")
+            logger.info("  Users already exist â€” skipping.")
     finally:
         db.close()
 
@@ -301,7 +301,7 @@ async def lifespan(app: FastAPI):
     logger.info("ComplianceIQ shutting down.")
 
 
-# ── CREATE THE APP ────────────────────────────────────────────────────────────
+# â”€â”€ CREATE THE APP â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 app = FastAPI(
     title="ComplianceIQ API",
     description="AI-powered compliance monitoring for Indian fintech.",
@@ -309,7 +309,7 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# ── CORS CONFIGURATION ────────────────────────────────────────────────────────
+# â”€â”€ CORS CONFIGURATION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 # CORS = Cross-Origin Resource Sharing.
 # Without this, your React frontend (on port 5173) CANNOT call this server
 # (on port 8000). Browsers block it as a security measure.
@@ -320,6 +320,7 @@ app.add_middleware(
         "http://localhost:5173",            # React dev server (Vite)
         "http://localhost:3000",            # React dev server (CRA)
         "https://complianceiq.vercel.app",  # Deployed frontend (update later)
+        "https://repo-review-hazel.vercel.app",  # Nidhi's frontend review build
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -327,16 +328,16 @@ app.add_middleware(
 )
 
 
-# ════════════════════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 # API ROUTES
 # Each function below handles one type of request from the frontend.
 # The decorator (@app.get, @app.post, etc.) says:
 #   - Which HTTP method (GET = read data, POST = send data, PUT = update)
 #   - Which URL path ("/auth/login", "/alerts", etc.)
-# ════════════════════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 
-# ── HEALTH CHECK ─────────────────────────────────────────────────────────────
+# â”€â”€ HEALTH CHECK â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 @app.get("/", tags=["health"])
 def root():
     """
@@ -381,7 +382,7 @@ def ml_health():
         }
 
 
-# ── LOGIN ─────────────────────────────────────────────────────────────────────
+# â”€â”€ LOGIN â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 @app.post("/auth/login", response_model=LoginResponse, tags=["auth"])
 #def login(request: LoginRequest, req: Request, db: Session = Depends(get_db)):
 def login(
@@ -461,7 +462,7 @@ def login(
     )
 
 
-# ── GET MY PROFILE ────────────────────────────────────────────────────────────
+# â”€â”€ GET MY PROFILE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 @app.get("/auth/me", tags=["auth"])
 def get_my_profile(current_user: User = Depends(get_current_user)):
     """
@@ -478,7 +479,7 @@ def get_my_profile(current_user: User = Depends(get_current_user)):
     }
 
 
-# ── CHECK A TRANSACTION ───────────────────────────────────────────────────────
+# â”€â”€ CHECK A TRANSACTION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 @app.post("/transactions/check", tags=["transactions"])
 async def check_transaction(
     request: TransactionCheckRequest,
@@ -492,7 +493,7 @@ async def check_transaction(
     - SHAP explainability
     """
 
-    # ── SAVE TRANSACTION TO DATABASE ─────────────────────────────
+    # â”€â”€ SAVE TRANSACTION TO DATABASE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     tx = Transaction(
         sender_account=request.sender_account,
         receiver_account=request.receiver_account,
@@ -508,7 +509,7 @@ async def check_transaction(
     db.commit()
     db.refresh(tx)
 
-    # ── PREPARE DATA FOR ML PIPELINE ─────────────────────────────
+    # â”€â”€ PREPARE DATA FOR ML PIPELINE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     tx_data = {
         "amount": request.amount,
         "hour_of_day": request.hour_of_day,
@@ -516,10 +517,10 @@ async def check_transaction(
         "kyc_verified": request.kyc_verified,
     }
 
-    # ── RUN ML + RULE ENGINE PIPELINE ────────────────────────────
+    # â”€â”€ RUN ML + RULE ENGINE PIPELINE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     result = analyze_transaction(tx_data)
 
-        # ── EXTRACT RESULTS ──────────────────────────────────────────
+        # â”€â”€ EXTRACT RESULTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     is_flagged = result.get("flagged", False)
     risk_level = result.get("risk_level", "low")
     risk_score = result.get("ml_probability", 0.0)
@@ -527,12 +528,12 @@ async def check_transaction(
     violations = result.get("rule_violations", [])
     shap_explanation = result.get("shap_explanation", {})
     ai_alert = result.get("summary", "No alert generated.")
-    # ── UPDATE TRANSACTION ───────────────────────────────────────
+    # â”€â”€ UPDATE TRANSACTION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     tx.status = "flagged" if is_flagged else "clean"
     tx.risk_score = risk_score
     tx.checked_at = datetime.utcnow()
 
-    # ── CREATE ALERT IF FLAGGED ──────────────────────────────────
+    # â”€â”€ CREATE ALERT IF FLAGGED â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     alert = None
 
     if is_flagged:
@@ -561,7 +562,7 @@ async def check_transaction(
 
         db.add(alert)
 
-    # ── SAVE CHANGES ─────────────────────────────────────────────
+    # â”€â”€ SAVE CHANGES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     db.commit()
 
     if alert:
@@ -573,7 +574,7 @@ async def check_transaction(
     )
 
 
-    # ── RETURN RESPONSE ──────────────────────────────────────────
+    # â”€â”€ RETURN RESPONSE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     return {
         "transaction_id": tx.id,
         "flagged": is_flagged,
@@ -589,7 +590,7 @@ async def check_transaction(
         ),
     }
 
-# ── GET ALL ALERTS ─────────────────────────────────────────────────────────
+# â”€â”€ GET ALL ALERTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 @app.get("/alerts", tags=["alerts"])
 def list_alerts(
     status: str = None,
@@ -603,13 +604,13 @@ def list_alerts(
     Get all alerts. Any logged-in user can call this.
 
     Optional filters (add as URL query params):
-        ?status=open           → only open alerts
-        ?risk_level=high       → only high-risk alerts
-        ?status=open&risk_level=high  → both filters
+        ?status=open           â†’ only open alerts
+        ?risk_level=high       â†’ only high-risk alerts
+        ?status=open&risk_level=high  â†’ both filters
 
     Pagination:
-        ?limit=20&offset=0     → first 20 alerts
-        ?limit=20&offset=20    → next 20 alerts
+        ?limit=20&offset=0     â†’ first 20 alerts
+        ?limit=20&offset=20    â†’ next 20 alerts
 
     Try it in /docs:
         GET /alerts
@@ -643,7 +644,7 @@ def list_alerts(
     }
 
 
-# ── GET ONE ALERT (full details) ─────────────────────────────────────────────
+# â”€â”€ GET ONE ALERT (full details) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 @app.get("/alerts/{alert_id}", tags=["alerts"])
 def get_alert(
     alert_id: str,
@@ -689,7 +690,7 @@ def get_alert(
     }
 
 
-# ── RESOLVE AN ALERT ───────────────────────────────────────────────────────
+# â”€â”€ RESOLVE AN ALERT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 @app.put("/alerts/{alert_id}/resolve", tags=["alerts"])
 def resolve_alert(
     alert_id: str,
@@ -730,7 +731,7 @@ def resolve_alert(
     return {"message": "Alert resolved.", "alert_id": alert_id}
 
 
-# ── ESCALATE AN ALERT ──────────────────────────────────────────────────────
+# â”€â”€ ESCALATE AN ALERT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 @app.put("/alerts/{alert_id}/escalate", tags=["alerts"])
 def escalate_alert(
     alert_id: str,
@@ -748,7 +749,7 @@ def escalate_alert(
     return {"message": "Alert escalated.", "alert_id": alert_id}
 
 
-# ── DASHBOARD SUMMARY ────────────────────────────────────────────────────────
+# â”€â”€ DASHBOARD SUMMARY â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 @app.get("/dashboard/summary", tags=["dashboard"])
 def dashboard_summary(
     current_user: User = Depends(get_current_user),
@@ -756,10 +757,10 @@ def dashboard_summary(
 ):
     """
     Returns the 4 numbers shown on the dashboard summary cards:
-        - alerts_today     → how many alerts were created today
-        - high_risk_open   → how many high-risk alerts are still open
-        - resolved_week    → how many alerts were resolved this week
-        - total_open       → total open alerts right now
+        - alerts_today     â†’ how many alerts were created today
+        - high_risk_open   â†’ how many high-risk alerts are still open
+        - resolved_week    â†’ how many alerts were resolved this week
+        - total_open       â†’ total open alerts right now
 
     The frontend calls this to populate the 4 stat cards at the top.
     """
@@ -781,7 +782,7 @@ def dashboard_summary(
     }
 
 
-# ── CREATE USER (admin only) ──────────────────────────────────────────────
+# â”€â”€ CREATE USER (admin only) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 @app.post("/users", tags=["admin"], status_code=201)
 def create_user(
     body: CreateUserRequest,
@@ -824,7 +825,7 @@ def create_user(
     }
 
 
-# ── LIST ALL USERS (admin only) ────────────────────────────────────────────
+# â”€â”€ LIST ALL USERS (admin only) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 @app.get("/users", tags=["admin"])
 def list_users(
     current_user: User = Depends(require_roles(["admin"])),
@@ -845,7 +846,7 @@ def list_users(
     ]
 
 
-# ── DEACTIVATE USER (admin only) ────────────────────────────────────────────
+# â”€â”€ DEACTIVATE USER (admin only) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 @app.put("/users/{user_id}/deactivate", tags=["admin"])
 def deactivate_user(
     user_id: str,
@@ -866,7 +867,7 @@ def deactivate_user(
     return {"message": f"User {user.email} deactivated."}
 
 
-# ── AUDIT LOGS (admin only) ───────────────────────────────────────────────
+# â”€â”€ AUDIT LOGS (admin only) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 @app.get("/audit-logs", tags=["admin"])
 def get_audit_logs(
     limit: int = 100,
@@ -893,7 +894,7 @@ def get_audit_logs(
     ]
 
 
-# ── CHATBOT (stub — Person 2 fills this in later) ───────────────────────────
+# â”€â”€ CHATBOT (stub â€” Person 2 fills this in later) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 @app.post("/chatbot/ask", tags=["chatbot"])
 def chatbot_ask(
     body: ChatbotRequest,
@@ -905,9 +906,10 @@ def chatbot_ask(
     return result
 
 
-# ── START THE SERVER (when running this file directly) ─────────────────────
+# â”€â”€ START THE SERVER (when running this file directly) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 if __name__ == "__main__":
     import uvicorn
     logger.info("Starting ComplianceIQ server...")
     logger.info("API docs: http://localhost:8000/docs")
     uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)
+
